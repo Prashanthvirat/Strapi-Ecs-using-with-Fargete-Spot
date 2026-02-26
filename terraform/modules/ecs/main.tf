@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "prashanth_task9_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = var.execution_role_arn
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
 
   container_definitions = jsonencode([
     {
