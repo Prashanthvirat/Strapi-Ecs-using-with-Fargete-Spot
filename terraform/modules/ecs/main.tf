@@ -10,7 +10,7 @@ data "aws_subnets" "default" {
 }
 
 resource "aws_ecs_cluster" "prashanth_task9_cluster" {
-  name = "jaspal-task9-strapi-cluster"
+  name = "prashanth-task9-strapi-cluster"
 }
 
 resource "aws_ecs_task_definition" "prashanth_task9_task" {
