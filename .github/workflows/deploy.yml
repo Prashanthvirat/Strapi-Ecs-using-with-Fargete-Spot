@@ -2,10 +2,6 @@ name: CD - Terraform Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      image_tag:
-        description: "Docker image tag to deploy"
-        required: true
 
 jobs:
   terraform-deploy:
@@ -25,6 +21,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Set Image Tag (short SHA)
+        id: vars
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Terraform Init
         working-directory: terraform
         run: terraform init
@@ -33,10 +33,9 @@ jobs:
         working-directory: terraform
         run: |
           terraform apply -auto-approve \
-          -var="image_tag=${{ github.event.inputs.image_tag }}" \
+          -var="image_tag=${{ steps.vars.outputs.tag }}" \
           -var="execution_role_arn=${{ secrets.ECS_EXECUTION_ROLE_ARN }}" \
           -var='subnet_ids=[${{ secrets.SUBNET_IDS }}]' \
           -var="db_name=${{ secrets.DB_NAME }}" \
           -var="db_username=${{ secrets.DB_USERNAME }}" \
-          -var="db_password=${{ secrets.DB_PASSWORD }}" \
-
+          -var="db_password=${{ secrets.DB_PASSWORD }}"
